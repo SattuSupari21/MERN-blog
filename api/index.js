@@ -21,7 +21,8 @@ app.use(cors({credentials: true, origin:'http://localhost:5173'}));
 app.use(express.json());
 app.use('/uploads', express.static(__dirname + "/uploads"));
 
-mongoose.connect("mongodb://localhost:27017/mern-blog")
+mongoose.connect("mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.7.1")
+// mongoose.connect("mongodb://localhost:27017/test")
 
 app.post('/login', async (req, res) => {
     const {username, password} = req.body;
@@ -81,12 +82,47 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
     });
 })
 
+app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
+    let newPath = null;
+    if (req.file) {
+        const {originalname, path} = req.file;
+        const parts = originalname.split('.');
+        const ext = parts[parts.length - 1];
+        newPath = path + '.' + ext;
+        fs.renameSync(path, newPath);
+    }
+    
+    const { token } = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if (err) throw err;
+        const {id, title, summary, content} = req.body;
+        const post = await Post.findById(id);
+        const isAuthor = JSON.stringify(post.author) === JSON.stringify(info.id);
+        if (!isAuthor) {
+            return res.status(400).json('You are not the author');
+        }
+        await post.update({
+            title,
+            summary,
+            content,
+            cover: newPath ? newPath : post.cover,
+        })
+        res.json(post);
+    });
+})
+
 app.get('/post', async (req, res) => {
     const posts = await Post.find()
                             .populate('author', ['username'])
                             .sort({createdAt: -1})
                             .limit(20);
     res.json(posts);
+})
+
+app.get('/post/:id', async (req, res) => {
+    const { id } = req.params;
+    const post = await Post.findById(id).populate('author', ['username']);
+    res.json(post);
 })
 
 app.listen(4000);
