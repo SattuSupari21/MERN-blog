@@ -27,14 +27,18 @@ mongoose.connect("mongodb://127.0.0.1:27017/?directConnection=true&serverSelecti
 app.post('/login', async (req, res) => {
     const {username, password} = req.body;
     const user = await User.findOne({username});
-    const passOk = bcrypt.compareSync(password, user.password);
-    if (passOk) {
-        jwt.sign({username, id:user._id}, secret, {}, (err, token) => {
-            if (err) throw err;
-            res.cookie('token', token).json({id: user._id, username});
-        })
+    if (user) {
+        const passOk = bcrypt.compareSync(password, user.password);
+        if (passOk) {
+            jwt.sign({username, id:user._id}, secret, {}, (err, token) => {
+                if (err) throw err;
+                res.cookie('token', token).json({id: user._id, username});
+            })
+        } else {
+            res.status(400).json('wrong password');
+        }
     } else {
-        res.status(400).json('wrong credentials');
+        res.status(400).json('Invalid username or password');
     }
 })
 
