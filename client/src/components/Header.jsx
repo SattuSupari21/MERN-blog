@@ -24,6 +24,7 @@ export default function Header() {
   }
 
   const username = userInfo?.username;
+  console.log(userInfo.username);
 
     return (
         <header>

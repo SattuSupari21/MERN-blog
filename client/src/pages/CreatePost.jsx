@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Navigate } from 'react-router';
 import 'react-quill/dist/quill.snow.css';
 import Editor from "../Editor";
+import { UserContext } from "../context/UserContext";
 
 export default function CreatePost() {
     const [title, setTitle] = useState('');
@@ -9,6 +10,9 @@ export default function CreatePost() {
     const [content, setContent] = useState('');
     const [files, setFiles] = useState('');
     const [redirect, setRedirect] = useState(false);
+
+    const {userInfo} = useContext(UserContext);
+    console.log(userInfo);
 
     async function createNewPost(e) {
         const data = new FormData();
@@ -32,13 +36,19 @@ export default function CreatePost() {
         return <Navigate to={'/'} />
     }
 
-    return (
-        <form onSubmit={createNewPost}>
-            <input type="title" placeholder={"Title"} value={title} onChange={e => setTitle(e.target.value)} />
-            <input type="summary" placeholder={"Summary"} value={summary} onChange={e => setSummary(e.target.value)} />
-            <input type="file" onChange={e => setFiles(e.target.files)} />
-            <Editor value={content} onChange={setContent} />
-            <button style={{marginTop: '5px'}}>Create post</button>
-        </form>
-    )
+    if (userInfo.username) {
+        return (
+            <form onSubmit={createNewPost}>
+                <input type="title" placeholder={"Title"} value={title} onChange={e => setTitle(e.target.value)} />
+                <input type="summary" placeholder={"Summary"} value={summary} onChange={e => setSummary(e.target.value)} />
+                <input type="file" onChange={e => setFiles(e.target.files)} />
+                <Editor value={content} onChange={setContent} />
+                <button style={{marginTop: '5px'}}>Create post</button>
+            </form>
+        )
+    } else {
+        return (
+            <h1>You need to login first.</h1>
+        )
+    }
 }
