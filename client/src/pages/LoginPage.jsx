@@ -1,5 +1,5 @@
 import { useContext, useState } from "react"
-import {Navigate} from 'react-router'
+import { Navigate } from 'react-router'
 import { UserContext } from "../context/UserContext";
 
 export default function LoginPage() {

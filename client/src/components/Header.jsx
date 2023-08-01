@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Navigate } from "react-router";
 import { UserContext } from "../context/UserContext";
 
 export default function Header() {
@@ -20,11 +21,12 @@ export default function Header() {
       credentials: 'include',
       method: 'POST',
     })
-    setUserInfo(null);
+    setUserInfo({});
+    return <Navigate to={'/'}/>
   }
 
   const username = userInfo?.username;
-  console.log(userInfo.username);
+  // console.log(userInfo.username);
 
     return (
         <header>
