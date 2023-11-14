@@ -153,12 +153,15 @@ div.post-page div.content p {
 div.edit-row {
     text-align: center;
     margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
 }
 
 div.post-page a.edit-btn {
     background-color: #333;
     display: inline-flex;
-    align-items: center;
+    align-items: center;;
     gap: 10px;
     color: #fff;
     padding: 15px 30px;

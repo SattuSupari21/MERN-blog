@@ -77,6 +77,7 @@ app.post("/logout", (req, res) => {
 });
 
 app.post("/post", uploadMiddleware.single("file"), async (req, res) => {
+  console.log(req.file);
   const { originalname, path } = req.file;
   const parts = originalname.split(".");
   const ext = parts[parts.length - 1];
@@ -99,6 +100,7 @@ app.post("/post", uploadMiddleware.single("file"), async (req, res) => {
 });
 
 app.put("/post", uploadMiddleware.single("file"), async (req, res) => {
+  console.log(req.file);
   let newPath = null;
   if (req.file) {
     const { originalname, path } = req.file;
@@ -147,5 +149,23 @@ app.get("/post/:id", async (req, res) => {
   const post = await Post.findById(id).populate("author", ["username"]);
   res.json(post);
 });
+
+app.delete("/post/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const post = await Post.findByIdAndDelete(id);
+    res.status(200).json({
+      status: "success",
+      message: "Post deleted successfully",
+      post
+    })
+  } catch (err) {
+    console.log(err);
+    res.status(204).json({
+      status: "fail",
+      message: "Error..."
+    })
+  }
+})
 
 app.listen(4000);

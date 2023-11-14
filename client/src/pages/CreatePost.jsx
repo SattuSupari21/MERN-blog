@@ -46,8 +46,9 @@ export default function CreatePost() {
             </form>
         )
     } else {
-        return (
-            <h1>You need to login first.</h1>
-        )
+        return <Navigate to={'/login'} />
+        // return (
+        //     <h1>You need to login first.</h1>
+        // )
     }
 }
