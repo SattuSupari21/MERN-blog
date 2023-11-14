@@ -38,6 +38,11 @@ header a.logo {
 header nav {
     display: flex;
     gap: 15px;
+    cursor: pointer;
+}
+
+header nav span {
+    cursor: default;
 }
 
 div.post {

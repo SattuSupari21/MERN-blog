@@ -21,10 +21,10 @@ app.use(cors({ credentials: true, origin: "http://localhost:5173" }));
 app.use(express.json());
 app.use("/uploads", express.static(__dirname + "/uploads"));
 
-mongoose.connect(
-  "mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.7.1"
-);
-// mongoose.connect("mongodb://localhost:27017/test")
+// mongoose.connect(
+//   "mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.7.1"
+// );
+mongoose.connect("mongodb://127.0.0.1:27017/test")
 
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;

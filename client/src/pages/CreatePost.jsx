@@ -12,7 +12,6 @@ export default function CreatePost() {
     const [redirect, setRedirect] = useState(false);
 
     const {userInfo} = useContext(UserContext);
-    console.log(userInfo);
 
     async function createNewPost(e) {
         const data = new FormData();

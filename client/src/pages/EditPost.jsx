@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router";
 import Editor from "../Editor";
 import { Navigate } from "react-router";
+import { UserContext } from "../context/UserContext";
 
 export default function EditPost() {
     const { id } = useParams();
@@ -11,6 +12,8 @@ export default function EditPost() {
     const [files, setFiles] = useState('');
     const [redirect, setRedirect] = useState(false);
 
+    const {userInfo} = useContext(UserContext);
+    
     useEffect(() => {
         fetch(`http://localhost:4000/post/${id}`)
             .then(response => {
@@ -46,13 +49,17 @@ export default function EditPost() {
         return <Navigate to={'/post/' + id} />
     }
 
-    return (
-        <form onSubmit={updatePost}>
-            <input type="title" placeholder={"Title"} value={title} onChange={e => setTitle(e.target.value)} />
-            <input type="summary" placeholder={"Summary"} value={summary} onChange={e => setSummary(e.target.value)} />
-            <input type="file" onChange={e => setFiles(e.target.files)} />
-            <Editor onChange={setContent} value={content}/>
-            <button style={{marginTop: '5px'}}>Update post</button>
-        </form>
-    )
+    if (userInfo.username) {
+        return (
+            <form onSubmit={updatePost}>
+                <input type="title" placeholder={"Title"} value={title} onChange={e => setTitle(e.target.value)} />
+                <input type="summary" placeholder={"Summary"} value={summary} onChange={e => setSummary(e.target.value)} />
+                <input type="file" onChange={e => setFiles(e.target.files)} />
+                <Editor onChange={setContent} value={content}/>
+                <button style={{marginTop: '5px'}}>Update post</button>
+            </form>
+        )
+    } else {
+        return <h1>You need to login first.</h1>
+    }
 }
